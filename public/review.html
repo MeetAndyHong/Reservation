@@ -1,0 +1,107 @@
+<div class="container">
+    <div class="row">
+        <div class="col-md-3" ng-repeat="data in info" ng-show="currentOwner">
+            <ul class="list-group">
+                <li class="list-group-item">First Name: {{data.reservations.firstname}}</li>
+                <li class="list-group-item">Last Name: {{data.reservations.lastname}}</li>
+                <li class="list-group-item">Email: {{data.reservations.email}}</li>
+                <li class="list-group-item">Phone Number: {{data.reservations.phonenumber}}</li>
+                <li class="list-group-item">Date: {{data.reservations.date | date:'MM/dd/yyyy'}}</li>
+                <li class="list-group-item">Time: {{data.reservations.time}}</li>
+                <li class="list-group-item">Number of people: {{data.reservations.noofpeople}}</li>
+                <li class="list-group-item">
+                    <input type="submit" value="Edit" class="btn btn-primary" ng-click="">
+                    <input type="submit" value="Delete" class="btn btn-danger"
+                           ng-click="deleteReservation(data)">
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="col-md-12" ng-hide="currentOwner">
+        <form>
+            <div class="form-group">
+                <label>Confirmation Code</label>
+                <input type="text" class="form-control" id="confirmCode" placeholder="Numbers with 6 digits" ng-model="code">
+            </div>
+            <button type="submit" class="btn btn-default" ng-click="confirmUser(code)">Submit</button>
+        </form>
+    </div>
+    <div class="row" ng-show="showdata">
+        <div class="col-md-6 col-md-offset-3">
+            <form id="myform">
+                <div class="form-group">
+                    <label>First Name: </label>
+                    <input type="text" id="firstName" class="form-control" ng-model="userinfo.reservations.firstname" ng-readonly="canEdit">
+                </div>
+                <div class="form-group">
+                    <label>Last Name: </label>
+                    <input type="text" id="lastName" class="form-control" ng-model="userinfo.reservations.lastname" ng-readonly="canEdit">
+                </div>
+                <div class="form-group">
+                    <label>Email Address: </label>
+                    <input type="text" id="email" class="form-control" ng-model="userinfo.reservations.email" ng-readonly="canEdit">
+                </div>
+                <div class="form-group">
+                    <label>Phone Number: </label>
+                    <input type="text" id="phoneNumber" class="form-control" ng-model="userinfo.reservations.phonenumber" ng-readonly="canEdit">
+                </div>
+                <div class="form-group">
+                    <label>Dining Date: </label>
+                    <input type="text" id="date" class="form-control" ng-model="userinfo.reservations.date | date:'MM/dd/yyyy'" ng-readonly="canEdit">
+                </div>
+                <div class="form-group">
+                    <label>Dining time: </label>
+                    <select id="time" class="form-control" ng-model="userinfo.reservations.time" ng-readonly="canEdit">
+                        <option value="10:00AM">10:00AM</option>
+                        <option value="10:30AM">10:30AM</option>
+                        <option value="11:00AM">11:00AM</option>
+                        <option value="11:30AM">11:30AM</option>
+                        <option value="12:00PM">12:00PM</option>
+                        <option value="12:30PM">12:30PM</option>
+                        <option value="1:00PM">1:00PM</option>
+                        <option value="1:30PM">1:30PM</option>
+                        <option value="2:00PM">2:00PM</option>
+                        <option value="2:30PM">2:30PM</option>
+                        <option value="3:00PM">3:00PM</option>
+                        <option value="3:30PM">3:30PM</option>
+                        <option value="4:00PM">4:00PM</option>
+                        <option value="4:30PM">4:30PM</option>
+                        <option value="5:00PM">5:00PM</option>
+                        <option value="5:30PM">5:30PM</option>
+                        <option value="6:00PM">6:00PM</option>
+                        <option value="6:30PM">6:30PM</option>
+                        <option value="7:00PM">7:00PM</option>
+                        <option value="7:30PM">7:30PM</option>
+                        <option value="8:00PM">8:00PM</option>
+                        <option value="8:30PM">8:30PM</option>
+                        <option value="9:00PM">9:00PM</option>
+                        <option value="9:30PM">9:30PM</option>
+                        <option value="10:00PM">10:00PM</option>
+                        <option value="10:30PM">10:30PM</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label>How many people?</label>
+                    <select id="NoOfPeople" class="form-control" ng-model="userinfo.reservations.noofpeople" ng-readonly="canEdit">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                        <option value="6">6</option>
+                        <option value="7">7</option>
+                        <option value="8">8</option>
+                        <option value="9">9</option>
+                        <option value="10">10</option>
+                    </select>
+                </div>
+                <input type="submit" value="Edit" class="btn btn-primary" ng-click="editReservation()" ng-show="edit">
+                <input type="submit" value="Update" class="btn btn-primary" ng-click="updateReservation(code)" ng-hide="edit">
+                <input type="submit" value="Delete" class="btn btn-danger"
+                       ng-click="deleteReservation(userinfo)">
+
+            </form>
+            </ul>
+        </div>
+    </div>
+</div>

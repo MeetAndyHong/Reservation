@@ -1,0 +1,213 @@
+<html ng-app="wilsons">
+<head>
+    <title>Reservation</title>
+    <link rel="stylesheet" href="bootstrap/css/bootstrap.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+    <script type="text/javascript" src="bootstrap/js/bootstrap.js"></script>
+    <link rel="stylesheet" href="style.css">
+    <script type="text/javascript" src="angular.min.js"></script>
+    <script type="text/javascript" src="angular-route.js"></script>
+    <script type="text/javascript" src="angular-cookies.js"></script>
+    <script type="text/javascript">
+        var app = angular.module('wilsons', ['ngRoute', 'ngCookies']);
+
+        app.config(function ($routeProvider, $locationProvider) {
+            $routeProvider
+                .when('/', {
+                    templateUrl: 'home.html',
+                    controller: 'homeController'
+                })
+                .when('/reserve', {
+                    templateUrl: 'reserve.html',
+                    controller: 'reserveController'
+                })
+                .when('/review', {
+                    templateUrl: 'review.html',
+                    controller: 'reviewController'
+                })
+                .when('/signin', {
+                    templateUrl: 'signin.html',
+                    controller: 'signinController'
+                })
+                .when('/signup', {
+                    templateUrl: 'signup.html',
+                    controller: 'signupController'
+                });
+        });
+
+        app.run(function ($rootScope, $cookies) {
+            if ($cookies.get('token') && $cookies.get('currentOwner')) {
+                $rootScope.token = $cookies.get('token');
+                $rootScope.currentOwner = $cookies.get('currentOwner');
+            }
+
+
+        });
+
+        app.controller('homeController', function ($scope) {
+
+        });
+
+        app.controller('reserveController', function ($rootScope, $scope, $http) {
+
+            $scope.submitForm = function () {
+                $http.post('/reservations', {
+                    firstname: $scope.firstName,
+                    lastname: $scope.lastName,
+                    email: $scope.email,
+                    phonenumber: $scope.phoneNumber,
+                    date: $scope.date,
+                    time: $scope.time,
+                    noofpeople: $scope.NoOfPeople,
+                    confirmcode: $rootScope.confirmcode
+                }).then(function () {
+                    $scope.firstName = "";
+                    $scope.lastName = "";
+                    $scope.email = "";
+                    $scope.phoneNumber = "";
+                    $scope.date = "";
+                    $scope.time = "";
+                    $scope.NoOfPeople = "";
+                });
+
+                $http.get('/reservations').then(function (response) {
+                    var length = response.data.length;
+                    $rootScope.confirmCode = response.data[length - 1].confirmcode;
+                    console.log(response.data);
+                    console.log($rootScope.confirmCode);
+                    alert("You have booked a table!\nYour confirmation code is: " + $rootScope.confirmCode);
+                });
+            };
+
+        });
+
+        app.controller('reviewController', function ($rootScope, $scope, $http) {
+            $scope.canEdit = true;
+            $scope.edit = true;
+
+            function getReservations() {
+                $http.get('/reservations').then(function (response) {
+                    var length = response.data.length;
+                    console.log(response.data);
+                    $scope.info = response.data;
+                    $scope.firstname = info.reservations.firstname;
+                    $scope.lastname = info.reservations.lastname;
+                    $scope.email = info.reservations.email;
+                    $scope.phonenumber = info.reservations.phonenumber;
+                    $scope.date = info.reservations.date;
+                    $scope.time = info.reservations.time;
+                    $scope.noofpeople = info.reservations.noofpeople;
+                });
+            };
+
+            $scope.deleteReservation = function (data) {
+                $http.put('/reservations/delete', {
+                    reservations: data
+                }).then(function () {
+                    $scope.showdata = false;
+                    getReservations();
+                });
+            };
+
+            $scope.confirmUser = function (confirmcode) {
+                console.log(confirmcode);
+                $scope.showdata = false;
+                $http.get('/reservations/' + confirmcode, {
+                    confirmcode: $rootScope.confirmcode,
+                }).then(function (response) {
+                    $scope.showdata = true;
+                    console.log(response.data);
+                    $scope.userinfo = response.data;
+                    $scope.userfirstname = userinfo.reservations.firstname;
+                    $scope.userlastname = userinfo.reservations.lastname;
+                    $scope.useremail = userinfo.reservations.email;
+                    $scope.userphonenumber = userinfo.reservations.phonenumber;
+                    $scope.userdate = userinfo.reservations.date;
+                    $scope.usertime = userinfo.reservations.time;
+                    $scope.usernoofpeople = userinfo.reservations.noofpeople;
+                    //$rootScope.confirmUser = true;
+                    getReservations();
+                });
+            };
+
+            $scope.editReservation = function () {
+                $scope.canEdit = false;
+                $scope.edit = false;
+            };
+
+            $scope.updateReservation = function (confirmcode) {
+                $http.put('/reservations/' + confirmcode, {
+                    firstname: $scope.firstName,
+                    lastname: $scope.lastName,
+                    email: $scope.email,
+                    phonenumber: $scope.phoneNumber,
+                    date: $scope.date,
+                    time: $scope.time,
+                    noofpeople: $scope.NoOfPeople,
+                    confirmcode: $rootScope.confirmcode
+                }).then(function () {
+                    $scope.showdata = false;
+                });
+            };
+
+            getReservations();
+
+        });
+
+        app.controller('signupController', function ($scope, $http) {
+
+            $scope.submitSignup = function () {
+                var newOwner = {
+                    email: $scope.email,
+                    password: $scope.password
+                }
+
+                $http.post('/owners', newOwner).then(function () {
+                    alert("success");
+                });
+            };
+        });
+
+        app.controller('signinController', function ($rootScope, $scope, $http, $cookies) {
+
+            $scope.signin = function () {
+                $http.put('owners/signin', {
+                    email: $scope.email,
+                    password: $scope.password
+                }).then(function (res) {
+                    $cookies.put('token', res.data.token);
+                    $cookies.put('currentOwner', "Weishun");
+                    $rootScope.token = res.data.token;
+                    $rootScope.currentOwner = "Weishun";
+                }, function (err) {
+                    alert("Login failed!");
+                });
+            };
+
+            $scope.logout = function () {
+                $cookies.remove('token');
+                $cookies.remove('currentOwner');
+                $rootScope.token = null;
+                $rootScope.currentOwner = null;
+            };
+        });
+    </script>
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-default navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/">Weishun's Restaurant</a>
+            </div>
+            <ul class="nav navbar-nav navbar-right">
+                <li><a href="#!/reserve">Make a Reservation</a></li>
+                <li><a href="#!/review">Review Reservations</a></li>
+                <li><a href="#!/signin">Signin</a></li>
+            </ul>
+        </div>
+    </nav>
+</header>
+<div ng-view></div>
+</body>
+</html>
