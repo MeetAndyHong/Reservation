@@ -2,14 +2,14 @@
 
 This is a sample for restaurant reservation using MEAN Stack.
 
-## How to use it
+## How to run it
 
 1. use npm install
 2. open mongod and mongo
 3. run nodemon server.js
 4. open localhost:3000 on browser
 
-###Features
+### Features
 1. Single Page Application
 2. Token
 3. AJAX
