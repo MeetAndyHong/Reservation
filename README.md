@@ -1,6 +1,6 @@
 # Reservation
 
-This is a sample for restaurant reservation using MEAN Stack.
+This is a sample for restaurant reservation using MEAN Stack. (MongoDB, Express.js, Angular.js, Node.js)
 
 ## How to run it
 
@@ -11,9 +11,9 @@ This is a sample for restaurant reservation using MEAN Stack.
 
 ### Features
 1. Single Page Application
-2. Token
+2. Json Web Token
 3. AJAX
 4. encryption
-5. Restful service
-6. Web server
-7. Heroku
+5. Restful Service
+6. Web Server
+
